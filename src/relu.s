@@ -17,16 +17,24 @@ relu:
 
 
 loop_start:
-
-
-
-
-
-
-
+    li t1 1
+    blt a1 t1 exception
+    mv t0 a0
+    mv t1 a1
+    mv t3 x0
 
 loop_continue:
-
+    lw t2 0(t0) # arrat[i]
+    bge t2 x0 store
+    li t2 0
+       
+store:
+    sw t2 0(t0)
+    addi t0 t0 4
+    addi t3 t3 1
+    beq t3 a1 loop_end
+    j loop_continue
+    
 
 
 loop_end:
@@ -36,3 +44,7 @@ loop_end:
 
 
     jr ra
+
+exception:
+    li a0 36
+    j exit
