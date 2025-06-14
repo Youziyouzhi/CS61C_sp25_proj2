@@ -63,15 +63,15 @@ read_matrix:
     addi t0 x0 4
     mv a2 t0
 
-    addi sp sp -4
-    sw t0 0(sp)
-
     jal fread
 
-    lw t0 0(sp)
-    addi sp sp 4
-
+    addi t0 x0 4
     bne a0 t0 exception_fread 
+
+    # lw a0 0(s0)
+    # jal print_int
+    # li a0 '\n'
+    # jal print_char
 
     # fread columns
     mv a0 s2
@@ -80,19 +80,21 @@ read_matrix:
     addi t0 x0 4
     mv a2 t0
 
-    addi sp sp -4
-    sw t0 0(sp)
-
     jal fread
 
-    lw t0 0(sp)
-    addi sp sp 4
-
+    addi t0 x0 4
     bne a0 t0 exception_fread 
+
+    # lw a0 0(s1)
+    # jal print_int
+    # li a0 '\n'
+    # jal print_char
 
     # malloc 
 
-    mul t0 s0 s1 
+    lw t0 0(s0)
+    lw t1 0(s1)
+    mul t0 t0 t1
     slli t0 t0 2
     mv a0 t0
 

@@ -20,9 +20,10 @@
 dot:
 
     # Prologue
-    addi sp sp -8
-    sw s0 0(sp)
-    sw s1 4(sp)
+    addi sp sp -12
+    sw ra 0(sp)
+    sw s0 4(sp)
+    sw s1 8(sp)
     
     li t0 1
     blt a2 t0 exception_36
@@ -61,8 +62,9 @@ exception_37:
 
 loop_end:
     # Epilogue
-    lw s0 0(sp)
-    lw s1 4(sp)
-    addi sp sp 8
+    lw ra 0(sp)
+    lw s0 4(sp)
+    lw s1 8(sp)
+    addi sp sp 12
     mv a0 t6
     jr ra

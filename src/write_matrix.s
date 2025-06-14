@@ -25,16 +25,106 @@
 write_matrix:
 
     # Prologue
+    addi sp sp -20
+    sw ra 0(sp)
+    sw s0 4(sp)
+    sw s1 8(sp)
+    sw s2 12(sp)
+    sw s3 16(sp)
 
 
+    mv t0 a0 
+    mv s1 a1
+    mv s2 a2
+    mv s3 a3
 
+    # fopen
+    mv a0 t0 
+    addi a1 x0 1
 
+    jal fopen
 
+    addi t0 x0 -1
+    beq a0 t0 Exception_fopen
+    mv s0 a0 # store file descriptor
 
+    #fwrite rows
+    ## malloc memory
 
+    addi a0 x0 4
+    jal malloc
+    mv t0 a0 
+
+    sw s2 0(t0)
+
+    ## fwrite rows
+    mv a0 s0 
+    mv a1 t0
+    addi a2 x0 1
+    addi a3 x0 4
+
+    jal fwrite
+
+    addi t0 x0 1
+    bne a0 t0 Exception_fwrite
+
+    #fwrite columns
+    ## malloc memory
+
+    addi a0 x0 4
+    jal malloc
+    mv t0 a0 
+
+    sw s3 0(t0)
+
+    ## fwrite rows
+    mv a0 s0 
+    mv a1 t0
+    addi a2 x0 1
+    addi a3 x0 4
+
+    jal fwrite
+
+    addi t0 x0 1
+    bne a0 t0 Exception_fwrite
+
+    # fwrite matrix
+
+    mv a0 s0
+    mv a1 s1
+    mul a2 s2 s3
+    addi a3 x0 4
+
+    jal fwrite
+
+    mul t0 s2 s3
+    bne t0 a0 Exception_fwrite
+
+    # fclose
+    mv a0 s0
+
+    jal fclose
+
+    bne a0 x0 Exception_fclose
 
 
     # Epilogue
 
+    lw ra 0(sp)
+    lw s0 4(sp)
+    lw s1 8(sp)
+    lw s2 12(sp)
+    lw s3 16(sp)
+    addi sp sp 20
 
     jr ra
+
+Exception_fopen:
+    li a0 27
+    j exit
+Exception_fwrite:
+    li a0 30
+    j exit
+Exception_fclose:
+    li a0 28
+    j exit

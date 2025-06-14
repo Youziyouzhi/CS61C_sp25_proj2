@@ -14,7 +14,8 @@
 # ==============================================================================
 relu:
     # Prologue
-
+    addi sp sp -4
+    sw ra 0(sp)
 
 loop_start:
     li t1 1
@@ -42,6 +43,8 @@ loop_end:
 
     # Epilogue
 
+    lw ra 0(sp)
+    addi sp sp 4
 
     jr ra
 

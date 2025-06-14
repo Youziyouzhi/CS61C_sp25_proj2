@@ -16,6 +16,10 @@
 # =================================================================
 argmax:
     # Prologue
+
+    addi sp sp -4
+    sw ra 0(sp)
+
     li t1 1
     blt a1 t1 exception
     
@@ -42,6 +46,10 @@ loop_continue:
 
 loop_end:
     # Epilogue
+
+    lw ra 0(sp)
+    addi sp sp 4
+
     mv a0 t5
     jr ra
     

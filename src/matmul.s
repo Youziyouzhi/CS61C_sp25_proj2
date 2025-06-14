@@ -34,13 +34,14 @@ matmul:
     blt a2 a4 exception_38
     
     # Prologue 
-    addi sp sp -24
+    addi sp sp -28
     sw ra 0(sp)
     sw s0 4(sp)
     sw s1 8(sp)
     sw s2 12(sp)
     sw s3 16(sp)
     sw s4 20(sp)
+    sw s5 24(sp)
     
     mv s0 a0 # s0 -> address of the matrix m0   
     mv s1 a3 # s1 -> address of the matrix m1
@@ -48,7 +49,8 @@ matmul:
     mv t2 a2 # number of the array m0 / m1
     mv t4 a5 # stride of the array m1   
     li t1 1 # stride of the array m0    
-    li s2 0  # counter m0   
+    li s2 0  # counter m0  
+    mv s5 a6 
 
     
 outer_loop_start: # loop matrix A row
@@ -66,14 +68,14 @@ inner_loop_start: # loop matrix B column , dot and store
     add t3 t3 s1
     
     # Prolugue
-    addi sp sp -28
+    addi sp sp -24
     sw t0 0(sp)
     sw t1 4(sp)
     sw t2 8(sp)
     sw t3 12(sp)
     sw t4 16(sp)
     sw a5 20(sp)
-    sw a6 24(sp)
+
     
     mv a0 t0
     mv a1 t3
@@ -81,7 +83,7 @@ inner_loop_start: # loop matrix B column , dot and store
     mv a3 t1
     mv a4 t4
     
-    jal ra dot
+    jal dot
     
     # Epilogue
     lw t0 0(sp)
@@ -90,11 +92,10 @@ inner_loop_start: # loop matrix B column , dot and store
     lw t3 12(sp)
     lw t4 16(sp)    
     lw a5 20(sp)
-    lw a6 24(sp)
-    addi sp sp 28
+    addi sp sp 24
     
-    sw a0 0(a6) # store value
-    addi a6 a6 4
+    sw a0 0(s5) # store value
+    addi s5 s5 4
 
     addi s3 s3 1
     bne s3 a5 inner_loop_start
@@ -112,8 +113,9 @@ outer_loop_end:
     lw s2 12(sp)
     lw s3 16(sp)
     lw s4 20(sp)
+    lw s5 24(sp)
     
-    addi sp sp 24
+    addi sp sp 28
     jr ra
     
 exception_38:
